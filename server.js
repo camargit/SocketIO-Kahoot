@@ -47,6 +47,12 @@ io.on('connection', function(socket){
     });
     
   socket.on('dataCollected',function(gameData){
+      console.log(gameData)
+
+
+    
+
+
 
       let totalAnswers = gameData.correctAnswers + gameData.incorrectAnswers;
       let correctAnswers = gameData.correctAnswers;
@@ -56,7 +62,7 @@ io.on('connection', function(socket){
       console.log(correctUsers);
       let percentage = (gameData.correctAnswers/totalAnswers)* 100;
 
-      socket.broadcast.emit("deliverData",{totalAnswers:totalAnswers,correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,incorrectUsers:incorrectUsers,correctUsers:correctAnswers,percentage:percentage});
+      socket.broadcast.emit("deliverData",{totalAnswers:totalAnswers,correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,incorrectUsers:incorrectUsers,correctUsers:correctUsers,percentage:percentage});
   });
 });
 

@@ -92,7 +92,7 @@ input[type=submit]:hover {
         <p id="incorrectAnswers"></p>
         <p id="correctUsers"></p>
         <p id="correctAverage"></p>
-        <p id="incorrectAnswers"></p>
+        <p id="incorrectUsers"></p>
         <button id="reset">Submit Another Question</button>
     </div>
 
@@ -190,12 +190,22 @@ input[type=submit]:hover {
 
     socket.on('deliverData', function(data) {
       console.log(data);
-      $("#totalAnswers").html("Total Answers:" + " " +  data.totalAnswers);
-      $("#correctAnswers").html("Correct Answers:" + " " + data.correctAnswers);
-      $("#incorrectAnswers").html("Incorrect Answers:" + " " + data.incorrectAnswers);
-      $("#correctUsers").html("Correct Users:" + " " + data.correctUsers);
-      $("#incorrectUsers").html("Incorrect Users:" + " " + data.incorrectUsers);
-      $("#correctAverage").html("Correct Answer Percentage: " + "%" + data.percentage);
+
+
+      let total = $("#totalAnswers").val() + data.totalAnswers;
+      let correctAns = $("#correctAnswers").val() + data.correctAnswers;
+      let incorrectAns = $("#incorrectAnswers").val() + data.incorrectAnswers;
+      let correctUsr = $("#correctUsers").val() + data.correctUsers;
+      let incorrectUsr = $("#incorrectUsers").val() + data.incorrectUsers;
+      let perc = $("#correctAverage").val() + data.percentage;
+
+      $("#totalAnswers").html("Total Answers:" + " " +  total);
+      $("#correctAnswers").html("Correct Answers:" + " " + correctAns);
+      $("#incorrectAnswers").html("Incorrect Answers:" + " " + incorrectAns);
+      $("#correctUsers").html("Correct Users:" + " " + correctUsr);
+      $("#incorrectUsers").html("Incorrect Users:" + " " + incorrectUsr);
+      $("#correctAverage").html("Correct Answer Percentage: " + "%" + perc);
+
     });
 
 

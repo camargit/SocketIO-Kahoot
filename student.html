@@ -174,7 +174,7 @@ input[type=submit]:hover {
         usersIncorrect.push(msg.username);
       }
       $("#answertext").html("Correct answer: " + msg.answer);
-      socket.emit("dataCollected",{correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,usersCorrect:usersCorrect,usersIncorrect:incorrectAnswers});
+      socket.emit("dataCollected",{correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,usersCorrect:usersCorrect,usersIncorrect:usersIncorrect});
     });
 
   </script>
