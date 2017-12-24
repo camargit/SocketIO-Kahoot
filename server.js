@@ -8,6 +8,14 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+let correctAnswers = 0;
+let incorrectAnswers = 0;
+let usersCorrect = [];
+let usersIncorrect = [];
+let totalAnswers = 0;
+let correctPercentage = 0;
+
+
 // Return the teacher page
 app.get('/teacher', function(req, res){
   res.sendFile(__dirname + '/teacher.html');
@@ -39,13 +47,7 @@ io.on('connection', function(socket){
   // If an answer to the question is received...
   socket.on('answerquestion', function(answerdata) {
     // Send back the result, but only to the client that sent the answer
-    let correctAnswers = 0;
-    let incorrectAnswers = 0;
-    let usersCorrect = [];
-    let usersIncorrect = [];
-    let totalAnswers = 0;
-    let correctPercentage = 0;
-
+    
     if(answerdata.answer == correctanswer){
       correctAnswers++;
       usersCorrect.push(answerdata.username);
