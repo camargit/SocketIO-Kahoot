@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/mattmartian/SocketIO-Kahoot/issues"
   },
-  "homepage": "https://github.com/mattmartian/SocketIO-Kahoot#readme"
+  "homepage": "https://github.com/mattmartian/SocketIO-Kahoot#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "http": "0.0.0",
+    "socket.io": "^2.0.4"
+  }
 }
