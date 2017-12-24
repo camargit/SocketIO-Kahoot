@@ -39,6 +39,31 @@ io.on('connection', function(socket){
   // If an answer to the question is received...
   socket.on('answerquestion', function(answerdata) {
     // Send back the result, but only to the client that sent the answer
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+    let usersCorrect = [];
+    let usersIncorrect = [];
+    let totalAnswers = 0;
+    let correctPercentage = 0;
+
+    if(answerdata.answer == correctanswer){
+      correctAnswers++;
+      usersCorrect.push(answerdata.username);
+    } else {
+      incorrectAnswers++;
+      usersIncorrect.push(answerdata.username);
+    }
+
+    totalAnswers = correctAnswers + incorrectAnswers;
+    correctAnswers = correctAnswers;
+    incorrectAnswers = incorrectAnswers;
+    incorrectUsers = usersIncorrect;
+    correctUsers = usersCorrect;
+    let percentage = (correctAnswers/totalAnswers)* 100;
+
+    socket.broadcast.emit("deliverData",{totalAnswers:totalAnswers,correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,incorrectUsers:incorrectUsers,correctUsers:correctUsers,percentage:percentage});
+
+    
     io.to(socket.id).emit("resultquestion"
                          ,{correct: (correctanswer == answerdata.answer) 
                          ,answer: correctanswer
@@ -46,24 +71,7 @@ io.on('connection', function(socket){
                          );          
     });
     
-  socket.on('dataCollected',function(gameData){
-      console.log(gameData)
-
-
-    
-
-
-
-      let totalAnswers = gameData.correctAnswers + gameData.incorrectAnswers;
-      let correctAnswers = gameData.correctAnswers;
-      let incorrectAnswers = gameData.incorrectAnswers;
-      let incorrectUsers = gameData.incorrectUsers;
-      let correctUsers = gameData.correctUsers;
-      console.log(correctUsers);
-      let percentage = (gameData.correctAnswers/totalAnswers)* 100;
-
-      socket.broadcast.emit("deliverData",{totalAnswers:totalAnswers,correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,incorrectUsers:incorrectUsers,correctUsers:correctUsers,percentage:percentage});
-  });
+  
 });
 
 // Have the server listen...

@@ -76,14 +76,7 @@ input[type=submit]:hover {
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
     
-    let username = ""
-    console.log("IM HERE!!!!");
-    let correctAnswers = 0;
-    let incorrectAnswers = 0;
-    let usersCorrect = [];
-    let usersIncorrect = [];
-    let totalAnswers = 0;
-    let correctPercentage = 0;
+    
 
     // Make the connection...
     var socket = io();
@@ -165,16 +158,11 @@ input[type=submit]:hover {
     socket.on('resultquestion', function(msg) {
       if (msg.correct){
         $("#result").html("Correct!");
-        correctAnswers++;
-        usersCorrect.push(msg.username);
-        console.log(msg.username);
       } else {
         $("#result").html("Incorrect!");
-        incorrectAnswers++;
-        usersIncorrect.push(msg.username);
       }
       $("#answertext").html("Correct answer: " + msg.answer);
-      socket.emit("dataCollected",{correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,usersCorrect:usersCorrect,usersIncorrect:usersIncorrect});
+     
     });
 
   </script>
