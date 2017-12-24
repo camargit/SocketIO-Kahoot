@@ -1,0 +1,182 @@
+<!--
+ StAuth10065: I Matthew Martin, 000338807 certify that this material is my original work. No other person's work has been used without due acknowledgement. 
+ I have not made my work available to anyone else.
+-->
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+  </head>
+  <style>
+    body {
+      text-align: center;
+    }
+    input[type=text], select {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 50%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+  </style>
+  <body>
+    <h1>Classroom Collaboration (student)</h1>  
+
+    <div id="greeting">
+        <p id="questionPending" style="font-size:30px;">Waiting for question....</p>
+        <label for="username" style="font-size:30px;">Enter Name:</label> <input type="text" id="username">
+    </div>
+  
+
+
+    <div id="shortAnswer">
+        <form id="shortanswers" action="">
+            Question: <span id="question" style="font-size:20px;"></span> <br />
+            <label for="answer" style="font-size:30px;">Answer:</label> <input type="text" id="answer"> <br />
+            <input id="submitAnswer" type="submit">
+          </form>
+          
+    </div>
+
+
+    <div id ="trueOrFalse">
+        <form id="tfanswers" action="">
+            
+            Question: <span id="tfquestion"></span> <br /> <br />
+            <label for="tfanswer">Answer:</label> <input type="radio" id="tfanswer"
+            name="true" value="true"><label for="true">True</label> <input type="radio" id="tfanswer"
+            name="false" value="false"><label for="false">False</label> <br />
+            <input id="submitAnswer" type="submit">
+          </form>
+          
+    </div>
+    <div id="result"></div>
+    <div id="answertext"></div>  <br /><br />
+   
+
+    <div id="timer"></div>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    
+    let username = ""
+    console.log("IM HERE!!!!");
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+    let usersCorrect = [];
+    let usersIncorrect = [];
+    let totalAnswers = 0;
+    let correctPercentage = 0;
+
+    // Make the connection...
+    var socket = io();
+
+    //hide the form elements for both question types
+    $("#shortAnswer").hide()
+    $("#trueOrFalse").hide();
+    
+    // If the user clicks the submit button, submit the answer...
+    $('#shortanswers').submit(function(){
+      let answer = $("#answer").val()
+      socket.emit('answerquestion',{ answer, username})
+      return false;
+    });
+
+    $('#tfanswers').submit(function(){
+      let answer = $("#tfanswer").val()
+      socket.emit('answerquestion',{ answer, username})
+      return false;
+    });
+
+
+
+    
+    // If a question is received, add it to the HTML page...
+
+    //change the form elements based on the question type
+    socket.on('deliverquestion', function(msg){
+      if(msg.questionType === "short"){
+
+        username = $("#username").val();
+        $("#greeting").hide();
+        $("#trueOrFalse").hide();
+        $("#shortAnswer").show();
+        $("#submitAnswer").prop('disabled',false);
+        $('#question').html(msg.question);
+        let counter = msg.timeLimit;
+			  let c = msg.timeLimit;
+			  let k = setInterval(function(){
+		      $("#timer").html(c + "sec");
+			    counter--;
+			    c--;
+			    if(counter === 0) {
+              clearInterval(k);
+              $("#timer").html("");
+              $("#submitAnswer").prop('disabled',true);
+              $("#greeting").show();
+              $("#shortAnswer").hide();
+			    }
+		  }, 1000);
+        
+      }
+      if(msg.questionType === "truefalse"){
+        username = $("#username").val();
+        $("#greeting").hide();
+        $("#trueOrFalse").show();
+        $("#shortAnswer").hide();
+        $("#submitAnswer").prop('disabled',false);
+        $('#tfquestion').html(msg.question);
+        let counter = msg.timeLimit;
+			  let c = msg.timeLimit;
+			  let k = setInterval(function(){
+		      $("#timer").html(c + "sec");
+			    counter--;
+			    c--;
+			    if(counter === 0) {
+              clearInterval(k);
+              $("#timer").html("");
+              $("#submitAnswer").prop('disabled',true);
+              $("#greeting").show();
+              $("#trueOrFalse").hide();
+			    }
+		  }, 1000);
+      }
+     
+    });
+
+    // If a result is received, show the user...
+    socket.on('resultquestion', function(msg) {
+      if (msg.correct){
+        $("#result").html("Correct!");
+        correctAnswers++;
+        usersCorrect.push(msg.username);
+        console.log(msg.username);
+      } else {
+        $("#result").html("Incorrect!");
+        incorrectAnswers++;
+        usersIncorrect.push(msg.username);
+      }
+      $("#answertext").html("Correct answer: " + msg.answer);
+      socket.emit("dataCollected",{correctAnswers:correctAnswers,incorrectAnswers:incorrectAnswers,usersCorrect:usersCorrect,usersIncorrect:incorrectAnswers});
+    });
+
+  </script>
+  </body>
+</html>
